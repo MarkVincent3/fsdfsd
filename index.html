@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Guessing Game</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 50px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      margin: 20px 0;
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0;
+      color: #555;
+    }
+
+    input {
+      padding: 10px;
+      margin: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #clue {
+      margin: 20px 0;
+    }
+
+    #result {
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    #attempts {
+      color: red;
+      margin-bottom: 20px;
+    }
+
+    #success, #failure {
+      display: none;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: 50px auto;
+    }
+
+    #success h2, #failure h2 {
+      color: #4caf50;
+    }
+
+    #failure h2 {
+      color: #f44336;
+    }
+
+    #play-again-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #play-again-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Valorant Agent Guessing Game</h1>
+    <p>Guess the Valorant agent based on the given clues. You have 3 attempts.</p>
+
+    <div id="clue"></div>
+    <input type="text" id="guess" placeholder="Enter your guess">
+    <button onclick="checkGuess()">Submit Guess</button>
+    <p id="result"></p>
+    <p id="attempts"></p>
+  </div>
+
+  <div id="success">
+    <h2>Congrats! You Win the Game!</h2>
+    <button id="play-again-button" onclick="playAgain()">Play Again</button>
+  </div>
+
+  <div id="failure">
+    <h2>You Failed the Game! Please try again.</h2>
+    <button id="play-again-button" onclick="playAgain()">Play Again</button>
+  </div>
+
+  <script>
+    const agents = [
+      {
+        "agent": "Jett",
+        "clues": [
+          "The opponent used an ability that allows them to dash through the air.",
+          "The opponent used an ultimate that rains down daggers from the sky.",
+          "The opponent played aggressively, often engaging in close-quarters combat."
+        ]
+      },
+      {
+        "agent": "Sova",
+        "clues": [
+          "The opponent used an ability that sends out a drone that reveals enemy locations.",
+          "The opponent used an ultimate that sends out a massive arrow that marks all enemies in its path.",
+          "The opponent played cautiously, using their abilities to gather information before engaging."
+        ]
+      },
+      {
+        "agent": "Cypher",
+        "clues": [
+          "The opponent used an ability that traps enemies in a cage.",
+          "The opponent used an ultimate that creates a zone where enemies cannot use their abilities.",
+          "The opponent played defensively, using their abilities to control the battlefield and prevent enemies from advancing."
+        ]
+      },
+      {
+        "agent": "Raze",
+        "clues": [
+          "The opponent used an ability that launches a rocket that can damage multiple enemies.",
+          "The opponent used an ultimate that deploys a boom bot that automatically seeks out and damages enemies.",
+          "The opponent played aggressively, using their abilities to clear out enemy positions and push through defenses."
+        ]
+      },
+      {
+        "agent": "Omen",
+        "clues": [
+          "The opponent used an ability that allows them to teleport to a specific location.",
+          "The opponent used an ultimate that sends out a wave that briefly teleports all enemies to a different location.",
+          "The opponent played strategically, using their abilities to gain the upper hand in positioning and surprise their opponents."
+        ]
+      }
+    ];
+
+    let currentAgent;
+    let attempts = 3;
+
+    function startGame() {
+      document.getElementById('game-container').style.display = 'block';
+      document.getElementById('success').style.display = 'none';
+      document.getElementById('failure').style.display = 'none';
+
+      // Randomly select an agent
+      currentAgent = agents[Math.floor(Math.random() * agents.length)];
+      // Display the first clue
+      displayClue(0);
+      // Reset attempts
+      attempts = 3;
+      updateAttempts();
+    }
+
+    function displayClue(index) {
+      document.getElementById('clue').innerHTML = <p>${currentAgent.clues[index]}</p>;
+    }
+
+    function checkGuess() {
+      const userGuess = document.getElementById('guess').value.toLowerCase();
+      if (userGuess === currentAgent.agent.toLowerCase()) {
+        // Correct guess
+        displayResult(true);
+      } else {
+        // Incorrect guess
+        attempts--;
+        updateAttempts();
+        if (attempts > 0) {
+          // Display the next clue
+          displayClue(3 - attempts);
+        } else {
+          // Out of attempts
+          displayResult(false);
+        }
+      }
+    }
+
+    function updateAttempts() {
+      document.getElementById('attempts').innerHTML = Attempts left: ${attempts};
+    }
+
+    function displayResult(isCorrect) {
+      const gameContainer = document.getElementById('game-container');
+      const successContainer = document.getElementById('success');
+      const failureContainer = document.getElementById('failure');
+
+      if (isCorrect) {
+        successContainer.style.display = 'block';
+        gameContainer.style.display = 'none';
+      } else {
+        failureContainer.style.display = 'block';
+        gameContainer.style.display = 'none';
+      }
+    }
+
+    function playAgain() {
+      startGame();
+    }
+
+    // Start the game on page load
+    window.onload = startGame;
+  </script>
+</body>
+</html>
